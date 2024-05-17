@@ -1,0 +1,632 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Voosh Enhanced Authentication API",
+    "description": "These set of APIs provide endpoints for managing administrator and user details for authorization and authentication purposes.\n\n**Features include:**\n- **Register new Admin/User**: One can register as admin or user.\n- **Authenticate**: Both users and admins can be authenticated.\n- **Sign out**: Admins and users can sign out.\n- **Profile Details**: Admins and users can see their profile details like email, contact, profile pic, bio etc.\n- **User List**: Admins can see both private and public user details where as normal users can see only public account details.\n- **Update profile details**: Admins and users can update their profile details like making their account private/public or changing username, password, email, phone, bio, profile pic etc. \n\n\n**Contact Information**:\n- **Name:** Jyoti Kamal Singh\n- **Email:** [jyotikamal.official@gmail.com](mailto:jyotikamal.official@gmail.com)\n- **Phone:** [7354440856](tel:7354440856)\n- **Designation:** Software Developer\n- **Portfolio:** [https://jyoti-kamal.netlify.app/](https://jyoti-kamal.netlify.app/)",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://voosh-assignment-s2ko.onrender.com",
+      "description": "Deployed server url"
+    },
+    {
+      "url": "http://localhost:5000",
+      "description": "Local server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "User Authentication",
+      "description": "Admins and users can register and login/authenticate their account"
+    },
+    {
+      "name": "Profile details",
+      "description": "Admins and users can check their and other users profile details"
+    },
+    {
+      "name": "Update Profile",
+      "description": "Admins and users can update their profile details. Like making their account public/private change their userName, password, photo, phone, email ect"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/user/register": {
+      "post": {
+        "tags": [
+          "User Authentication"
+        ],
+        "description": "One can register as admin or user.",
+        "responses": {
+          "201": {
+            "description": "User created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/userRegistered"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User already exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/alreadyRegistered"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/user/authenticate": {
+      "post": {
+        "tags": [
+          "User Authentication"
+        ],
+        "description": "Both users and admins can be authenticated.",
+        "responses": {
+          "200": {
+            "description": "Login successful.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/loginSuccess"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Credentials.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/invalidCredentials"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/userLogin"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/user/signout": {
+      "post": {
+        "tags": [
+          "User Authentication"
+        ],
+        "description": "Admins and users can sign out.",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful sign out",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/logout"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User not registered.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/userNotRegistered"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/user/profile": {
+      "get": {
+        "tags": [
+          "Profile details"
+        ],
+        "description": "Admins and users can see their profile details like email, contact, profile pic, bio etc.",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile fetched successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/userDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User not registered.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/userNotRegistered"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Update Profile"
+        ],
+        "description": "Admins and users can update their profile details like making their account private/public or changing username, password, email, phone, bio, profile pic etc.",
+        "responses": {
+          "200": {
+            "description": "Profile updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/userDetails"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/profileUpdateBody"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users": {
+      "get": {
+        "tags": [
+          "Profile details"
+        ],
+        "description": "Admins can see both private and public user details where as normal users can see only public account details.",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile fetched successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/userList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User not registered.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/userNotRegistered"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "userName": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "example": "john.doe@voosh.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "John@voosh"
+          },
+          "phone": {
+            "type": "number",
+            "example": 7354441234
+          },
+          "bio": {
+            "type": "string",
+            "example": "This is a short description about myself"
+          },
+          "photo": {
+            "type": "string",
+            "example": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8ngU1GxK9VdwXCRVuxzISotU9_hBfHaLDYA9wevgXtuSqbhWiWRlrLE733g&s"
+          },
+          "isAdmin": {
+            "type": "boolean",
+            "example": false
+          },
+          "loginType": {
+            "type": "string",
+            "example": "voosh"
+          },
+          "isAccountPrivate": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "userName",
+          "email",
+          "password",
+          "phone",
+          "bio",
+          "photo",
+          "isAdmin",
+          "loginType",
+          "isAccountPrivate"
+        ]
+      },
+      "userRegistered": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "new user registered successfuly."
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "userName": {
+                "type": "string",
+                "example": "John Doe"
+              },
+              "email": {
+                "type": "string",
+                "example": "john.doe@voosh.com"
+              },
+              "phone": {
+                "type": "number",
+                "example": 7354441234
+              },
+              "bio": {
+                "type": "string",
+                "example": "This is a short description about myself"
+              },
+              "photo": {
+                "type": "string",
+                "example": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8ngU1GxK9VdwXCRVuxzISotU9_hBfHaLDYA9wevgXtuSqbhWiWRlrLE733g&s"
+              },
+              "isAdmin": {
+                "type": "boolean",
+                "example": false
+              },
+              "loginType": {
+                "type": "string",
+                "example": "voosh"
+              },
+              "isAccountPrivate": {
+                "type": "boolean",
+                "example": false
+              },
+              "isLogin": {
+                "type": "boolean",
+                "example": true
+              }
+            }
+          }
+        }
+      },
+      "alreadyRegistered": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "User already registered."
+          },
+          "error": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "userDetails": {
+        "type": "object",
+        "properties": {
+          "userName": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "example": "john.doe@voosh.com"
+          },
+          "phone": {
+            "type": "number",
+            "example": 7354441234
+          },
+          "bio": {
+            "type": "string",
+            "example": "This is a short description about myself"
+          },
+          "photo": {
+            "type": "string",
+            "example": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8ngU1GxK9VdwXCRVuxzISotU9_hBfHaLDYA9wevgXtuSqbhWiWRlrLE733g&s"
+          },
+          "isAdmin": {
+            "type": "boolean",
+            "example": false
+          },
+          "loginType": {
+            "type": "string",
+            "example": "voosh"
+          },
+          "isAccountPrivate": {
+            "type": "boolean",
+            "example": false
+          },
+          "isLogin": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "userLogin": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "john.doe@voosh.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "John@voosh"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "loginSuccess": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "login successful."
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "userName": {
+                "type": "string",
+                "example": "John Doe"
+              },
+              "email": {
+                "type": "string",
+                "example": "john.doe@voosh.com"
+              },
+              "phone": {
+                "type": "number",
+                "example": 7354441234
+              },
+              "bio": {
+                "type": "string",
+                "example": "This is a short description about myself"
+              },
+              "photo": {
+                "type": "string",
+                "example": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8ngU1GxK9VdwXCRVuxzISotU9_hBfHaLDYA9wevgXtuSqbhWiWRlrLE733g&s"
+              },
+              "isAdmin": {
+                "type": "boolean",
+                "example": false
+              },
+              "loginType": {
+                "type": "string",
+                "example": "voosh"
+              },
+              "isAccountPrivate": {
+                "type": "boolean",
+                "example": false
+              },
+              "isLogin": {
+                "type": "boolean",
+                "example": true
+              }
+            }
+          }
+        }
+      },
+      "invalidCredentials": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Invalid user credentials."
+          },
+          "error": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "userNotRegistered": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "User not registered."
+          }
+        }
+      },
+      "logout": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "You have been signed out successfully."
+          }
+        }
+      },
+      "profileUpdateBody": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "john.doe@voosh.com"
+          },
+          "updateParams": {
+            "type": "object",
+            "properties": {
+              "isAccountPrivate": {
+                "type": "boolean",
+                "example": true
+              },
+              "bio": {
+                "type": "string",
+                "example": "add your updated new bio here"
+              },
+              "photo": {
+                "type": "string",
+                "example": "add new profile pic link here"
+              },
+              "userName": {
+                "type": "string",
+                "example": "add new username here"
+              },
+              "phone": {
+                "type": "number",
+                "example": 7632198042
+              },
+              "email": {
+                "type": "string",
+                "example": "add new email here"
+              }
+            },
+            "required": [
+              "isAccountPrivate",
+              "bio",
+              "photo",
+              "userName",
+              "phone",
+              "email"
+            ]
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "profileUpdateSuccess": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "profile details updated successfully."
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "userName": {
+                "type": "string",
+                "example": "John Doe"
+              },
+              "email": {
+                "type": "string",
+                "example": "john.doe@voosh.com"
+              },
+              "phone": {
+                "type": "number",
+                "example": 7354441234
+              },
+              "bio": {
+                "type": "string",
+                "example": "This is a short description about myself"
+              },
+              "photo": {
+                "type": "string",
+                "example": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8ngU1GxK9VdwXCRVuxzISotU9_hBfHaLDYA9wevgXtuSqbhWiWRlrLE733g&s"
+              },
+              "isAdmin": {
+                "type": "boolean",
+                "example": false
+              },
+              "loginType": {
+                "type": "string",
+                "example": "voosh"
+              },
+              "isAccountPrivate": {
+                "type": "boolean",
+                "example": false
+              },
+              "isLogin": {
+                "type": "boolean",
+                "example": true
+              }
+            }
+          }
+        }
+      },
+      "userList": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/userDetails"
+        }
+      }
+    }
+  }
+}
